@@ -32,12 +32,16 @@ export class BlogCarouselComponent implements OnInit {
 
   private initSwiper(): void {
     if ((window as any).Swiper) {
+      // Para loop necesitamos al menos el doble de slides que los visibles
+      const minSlidesForLoop = 4; // Con 3 slides visibles en desktop, necesitamos 4+
+      const canLoop = this.posts.length >= minSlidesForLoop;
+      
       new (window as any).Swiper('.blogSwiper', {
         slidesPerView: 2,
         spaceBetween: 24,
-        loop: this.posts.length > 1,
+        loop: canLoop,
         grabCursor: true,
-        autoplay: this.posts.length > 1 ? { delay: 4500, disableOnInteraction: false } : false,
+        autoplay: canLoop ? { delay: 4500, disableOnInteraction: false } : false,
         pagination: { el: '.blog-swiper-pagination', clickable: true },
         navigation: {
           nextEl: '.blog-swiper-button-next',
