@@ -11,6 +11,10 @@ function loadEnv() {
   return {
     PORT: Number(process.env.PORT) || 3000,
     DATABASE_URL,
+    // Cloudinary (opcional): para subir imágenes desde el sistema y guardar URL en la BD
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || '',
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || '',
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET || '',
   };
 }
 
