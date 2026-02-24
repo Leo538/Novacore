@@ -8,6 +8,9 @@
     @if (title) {
       <h3>{{ title }}</h3>
     }
+    @if (authors.length) {
+      <p class="card-authors">Por: {{ authors.join(', ') }}</p>
+    }
     @if (description) {
       <p class="card-description">{{ description }}</p>
     }

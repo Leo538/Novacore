@@ -18,5 +18,7 @@ export class CardComponent {
   @Input() buttonText?: string;
   @Input() buttonLink?: string;
   @Input() showButton: boolean = false;
+  /** Autores (opcional; se muestra como "Por: A, B, C"). */
+  @Input() authors: string[] = [];
 }
 

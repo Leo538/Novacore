@@ -210,6 +210,8 @@
 
 .blog-modal-content {
   padding: 1.8rem 2rem 1.9rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 2rem);
 }
 
 .blog-create-form {
@@ -260,6 +262,105 @@
   }
 }
 
+.blog-input-readonly {
+  cursor: default !important;
+  background: #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+.blog-image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.blog-image-input {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.btn-choose-image {
+  align-self: flex-start;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.3);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  font-family: inherit;
+}
+
+.btn-choose-image:hover {
+  background: rgba(37, 99, 235, 0.15);
+  border-color: var(--primary);
+}
+
+.blog-image-preview {
+  position: relative;
+  max-width: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.blog-image-preview img {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.btn-remove-image {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(15, 23, 42, 0.75);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-remove-image:hover {
+  background: #0f172a;
+}
+
+.blog-autores-form {
+  margin-top: 0.2rem;
+}
+
+.blog-autores-form .blog-enlace-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.blog-modal-error {
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 0.75rem;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
 .blog-create-actions {
   margin-top: 0.4rem;
   display: flex;
@@ -286,10 +387,15 @@
   color: #ffffff;
   box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--primary-hover);
     transform: translateY(-1px);
     box-shadow: 0 14px 36px rgba(37, 99, 235, 0.45);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 

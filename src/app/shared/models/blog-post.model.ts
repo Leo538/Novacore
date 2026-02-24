@@ -16,6 +16,8 @@ export interface BlogPost {
   readTimeMinutes: number;
   tags: string[];
   enlaces: BlogPostLink[];
+  /** Autores del post (hasta 6). */
+  authors: string[];
 }
 
 /** Respuesta cruda del API (Neon/PostgreSQL). */
@@ -27,4 +29,6 @@ export interface BlogPostApi {
   enlaces: BlogPostLink[];
   createdAt: string;
   updatedAt: string;
+  /** Autores (opcional, hasta 6). */
+  autores?: string[];
 }

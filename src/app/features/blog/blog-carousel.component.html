@@ -4,40 +4,37 @@
     Un vistazo rápido a lo que estamos escribiendo: arquitectura, calidad y learning de proyectos reales.
   </p>
 
-  <div class="swiper-container-wrapper">
-    <div class="swiper blogSwiper">
-      <div class="swiper-wrapper">
-        @for (post of posts; track post.id) {
-          <div class="swiper-slide">
-            <article class="blog-slide-card">
-              <p class="blog-slide-date">
-                {{ post.publishedAt | date: 'd MMM y' }}
-              </p>
-              <h3 class="blog-slide-title">
-                {{ post.title }}
-              </h3>
-              <p class="blog-slide-excerpt">
-                {{ post.excerpt }}
-              </p>
-              <div class="blog-slide-footer">
-                <span class="blog-slide-readtime">
-                  {{ post.readTimeMinutes }} min
-                </span>
-                <button type="button" class="blog-slide-link" (click)="goToBlog()">
-                  <span class="blog-slide-link-icon">↗</span>
-                  <span>Ver detalle</span>
-                </button>
-              </div>
-            </article>
-          </div>
-        }
-      </div>
+  @if (posts.length === 0) {
+    <div class="blog-empty-state">
+      <p class="blog-empty-text">Aún no hay entradas en el blog.</p>
+      <p class="blog-empty-sub">Cuando se publiquen, aparecerán aquí en el carrusel.</p>
+      <app-button variant="primary" (click)="goToBlog()">Ir al blog</app-button>
     </div>
+  } @else {
+    <div class="swiper-container-wrapper">
+      <div class="swiper blogSwiper">
+        <div class="swiper-wrapper">
+          @for (post of posts; track post.id) {
+            <div class="swiper-slide">
+              <app-card
+                [imageUrl]="post.imageUrl || defaultImage"
+                [imageAlt]="post.imageAlt || post.title"
+                [title]="post.title"
+                [description]="post.excerpt"
+                [price]="(post.publishedAt | date: 'd MMM y') || ''"
+                [authors]="post.authors || []"
+                [showButton]="true"
+                buttonText="Ver más"
+                [buttonLink]="'/blog'"
+              />
+            </div>
+          }
+        </div>
+      </div>
 
-    <div class="swiper-button-next blog-swiper-button-next"></div>
-    <div class="swiper-button-prev blog-swiper-button-prev"></div>
-    <div class="swiper-pagination blog-swiper-pagination"></div>
-  </div>
+      <div class="swiper-button-next blog-swiper-button-next"></div>
+      <div class="swiper-button-prev blog-swiper-button-prev"></div>
+      <div class="swiper-pagination blog-swiper-pagination"></div>
+    </div>
+  }
 </section>
-
-
