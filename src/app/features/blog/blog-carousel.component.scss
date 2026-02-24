@@ -55,6 +55,46 @@
   padding: 0 80px;
 }
 
+.blog-carousel-empty {
+  max-width: 640px;
+  margin: 40px auto 0;
+  text-align: center;
+  color: #475569;
+
+  h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    font-size: 0.98rem;
+    margin-bottom: 1.4rem;
+  }
+}
+
+.blog-carousel-empty-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  background: #0f172a;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+
+  &:hover {
+    background: #111827;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+  }
+}
+
 .swiper.blogSwiper {
   position: relative;
   overflow: hidden;
@@ -218,5 +258,6 @@
     padding: 0 20px;
   }
 }
+
 
 

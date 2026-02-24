@@ -1,0 +1,38 @@
+<main class="projects-page">
+  <section class="projects-header">
+    <h1>Proyectos del repositorio de Distribuidas</h1>
+    <p>
+      Estos son los módulos principales del repositorio
+      <strong>Proyecto-Final-Distribuidas</strong> alojado en GitHub. Cada tarjeta te lleva directo
+      al código.
+    </p>
+  </section>
+
+  <section class="projects-grid">
+    @for (project of projects; track project.id) {
+      <article class="projects-grid-card">
+        <p class="project-role">{{ project.role }}</p>
+        <h2 class="project-name">{{ project.name }}</h2>
+        <p class="project-description">
+          {{ project.description }}
+        </p>
+        <div class="project-tags" *ngIf="project.stack.length">
+          @for (tech of project.stack; track tech) {
+            <span class="project-tag">{{ tech }}</span>
+          }
+        </div>
+        <div class="project-actions">
+          <a
+            class="project-link"
+            [href]="project.repoUrl"
+            target="_blank"
+            rel="noopener noreferrer">
+            Ver en GitHub
+          </a>
+        </div>
+      </article>
+    }
+  </section>
+</main>
+
+

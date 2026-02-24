@@ -1,20 +1,51 @@
 <section id="proyectos" data-nav="theme-dark">
-  <div class="projects-container reveal">
-    <div class="projects-content">
-      <div class="projects-text-box">
-        <h2 class="section-title-left">Conoce nuestros proyectos más destacados</h2>
-        <p class="projects-subtitle">Nuestros proyectos más destacados e importantes</p>
-        <div class="projects-btn-wrapper">
-          <app-button variant="primary" href="#">Conócelos</app-button>
-        </div>
-      </div>
-      <div class="projects-image-box">
-        <img 
-          src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=800"
-          alt="Proyecto Destacado TechEngineers" 
-          class="project-featured-img">
+  <h2 class="section-title reveal">Nuestros Proyectos</h2>
+  <p class="projects-subtitle projects-subtitle--center reveal">
+    Arquitectura distribuida con frontend, gateway y microservicios construidos para el Proyecto
+    Final de Aplicaciones Distribuidas.
+  </p>
+
+  <div class="swiper-container-wrapper reveal">
+    <div class="swiper projectsSwiper">
+      <div class="swiper-wrapper">
+        @for (project of projects | slice: 0:3; track project.id) {
+          <div class="swiper-slide">
+            <article class="project-card">
+              <p class="project-role">{{ project.role }}</p>
+              <h3 class="project-name">{{ project.name }}</h3>
+              <p class="project-description">
+                {{ project.description }}
+              </p>
+              <div class="project-tags" *ngIf="project.stack.length">
+                @for (tech of project.stack; track tech) {
+                  <span class="project-tag">{{ tech }}</span>
+                }
+              </div>
+              <div class="project-actions">
+                <a
+                  class="project-link"
+                  [href]="project.repoUrl"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  Ver en GitHub
+                </a>
+              </div>
+            </article>
+          </div>
+        }
       </div>
     </div>
+
+    <div class="swiper-button-next projects-swiper-button-next"></div>
+    <div class="swiper-button-prev projects-swiper-button-prev"></div>
+    <div class="swiper-pagination projects-swiper-pagination"></div>
+  </div>
+
+  <div class="projects-see-more">
+    <button type="button" class="projects-see-more-btn" (click)="goToAllProjects()">
+      Ver todos los proyectos del repositorio
+    </button>
   </div>
 </section>
+
 
