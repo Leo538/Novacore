@@ -1,0 +1,26 @@
+<section id="servicios" data-nav="theme-dark">
+  <h2 class="section-title reveal">Nuestros Servicios</h2>
+
+  <div class="swiper-container-wrapper reveal">
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper">
+        @for (service of services; track service.title) {
+          <div class="swiper-slide">
+            <app-card
+              [imageUrl]="service.imageUrl"
+              [imageAlt]="service.imageAlt"
+              [title]="service.title"
+              [description]="service.description"
+              [price]="service.price">
+            </app-card>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-pagination"></div>
+  </div>
+</section>
+

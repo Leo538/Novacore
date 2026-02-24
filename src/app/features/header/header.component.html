@@ -1,0 +1,16 @@
+<nav class="navbar" [class]="navigationService.currentTheme()" [class.scrolled]="navigationService.isScrolled()" id="main-nav">
+  <a href="#" class="logo-container" (click)="scrollToSection('inicio'); $event.preventDefault()">
+    <span class="logo-top">Tech</span>
+    <span class="logo-main">ENGINEERS</span>
+  </a>
+  <div class="menu-toggle" [class.open]="isMenuOpen()" (click)="toggleMenu()" id="menu-toggle">
+    <span></span><span></span><span></span>
+  </div>
+  <div class="nav-links" [class.active]="isMenuOpen()" id="nav-links">
+    <a (click)="scrollToSection('servicios'); $event.preventDefault()">Servicios</a>
+    <a (click)="scrollToSection('proyectos'); $event.preventDefault()">Proyectos</a>
+    <a (click)="scrollToSection('stack'); $event.preventDefault()">Tecnologías</a>
+    <a (click)="scrollToSection('contacto'); $event.preventDefault()">Contacto</a>
+  </div>
+</nav>
+
