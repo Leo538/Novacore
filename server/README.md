@@ -64,3 +64,23 @@ La API quedará en `http://localhost:3000`.
 `fecha` y `enlaces` son opcionales. Si no envías `fecha`, se usa la fecha actual.
 
 Los IDs de los posts son numéricos (por ejemplo `1`, `2`).
+
+## Estructura del proyecto
+
+```
+server/
+├── index.js              # Entrada: carga env, init DB, arranca app
+├── app.js                # Express: middleware, rutas, manejador de errores
+├── config/
+│   ├── env.js            # Validación de variables de entorno
+│   └── database.js       # Pool PostgreSQL e initDb
+├── controllers/
+│   └── blog.controller.js   # Lógica de petición/respuesta del blog
+├── services/
+│   └── blog.service.js   # Lógica de negocio y acceso a BD
+├── routes/
+│   └── blog.routes.js    # Definición de rutas /api/blog
+└── middleware/
+    ├── validateId.js     # Valida :id como entero
+    └── errorHandler.js   # Respuesta centralizada de errores
+```

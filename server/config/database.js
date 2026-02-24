@@ -1,13 +1,14 @@
 import pg from 'pg';
+import { env } from './env.js';
 
 const { Pool } = pg;
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined,
+  connectionString: env.DATABASE_URL,
+  ssl: env.DATABASE_URL.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined,
 });
 
-const initDb = async () => {
+export async function initDb() {
   const client = await pool.connect();
   try {
     await client.query(`
@@ -24,6 +25,6 @@ const initDb = async () => {
   } finally {
     client.release();
   }
-};
+}
 
-export { pool, initDb };
+export { pool };
