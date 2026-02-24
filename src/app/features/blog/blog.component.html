@@ -17,36 +17,50 @@
   </section>
 
   <section class="blog-list">
-    <div class="blog-grid">
-      @for (post of posts; track post.id) {
-        <article class="blog-card" (click)="openPost(post)">
-          <div class="blog-card-content">
-            <div class="blog-meta">
-              <span class="blog-date">
-                {{ post.publishedAt | date: 'd MMM y' }}
-              </span>
-              <span class="blog-dot"></span>
-              <span class="blog-readtime">{{ post.readTimeMinutes }} min lectura</span>
-            </div>
+    @if (posts.length) {
+      <div class="blog-grid">
+        @for (post of posts; track post.id) {
+          <article class="blog-card" (click)="openPost(post)">
+            <div class="blog-card-content">
+              <div class="blog-meta">
+                <span class="blog-date">
+                  {{ post.publishedAt | date: 'd MMM y' }}
+                </span>
+                <span class="blog-dot"></span>
+                <span class="blog-readtime">{{ post.readTimeMinutes }} min lectura</span>
+              </div>
 
-            <h2 class="blog-title">{{ post.title }}</h2>
-            <p class="blog-excerpt">{{ post.excerpt }}</p>
+              <h2 class="blog-title">{{ post.title }}</h2>
+              <p class="blog-excerpt">{{ post.excerpt }}</p>
 
-            <div class="blog-tags">
-              @for (tag of post.tags; track tag) {
-                <span class="blog-tag">#{{ tag }}</span>
-              }
-            </div>
+              <div class="blog-tags">
+                @for (tag of post.tags; track tag) {
+                  <span class="blog-tag">#{{ tag }}</span>
+                }
+              </div>
 
-            <div class="blog-actions">
-              <app-button variant="secondary">
-                Ver detalles
-              </app-button>
+              <div class="blog-actions">
+                <app-button variant="secondary">
+                  Ver detalles
+                </app-button>
+              </div>
             </div>
-          </div>
-        </article>
-      }
-    </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="blog-empty">
+        <h2>No hay entradas de blog todavía</h2>
+        <p>
+          Cuando registres tus primeras tareas o historias técnicas, aparecerán listadas aquí.
+        </p>
+        <div class="blog-actions-hero">
+          <app-button variant="primary" (click)="openCreateModal()">
+            Crear mi primer blog
+          </app-button>
+        </div>
+      </div>
+    }
   </section>
 
   @if (selectedPost) {
