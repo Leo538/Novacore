@@ -14,7 +14,8 @@ export const BLOG_POSTS_MOCK: BlogPost[] = [
     publishedAt: '2026-02-20',
     readTimeMinutes: 8,
     tags: ['Arquitectura', 'SaaS', 'Backend'],
-    enlaces: []
+    enlaces: [],
+    authors: ['Equipo Novacore']
   },
   {
     id: 2,
@@ -29,7 +30,8 @@ export const BLOG_POSTS_MOCK: BlogPost[] = [
     publishedAt: '2026-02-10',
     readTimeMinutes: 6,
     tags: ['DevOps', 'Calidad', 'Buenas prácticas'],
-    enlaces: []
+    enlaces: [],
+    authors: ['Equipo Novacore']
   },
   {
     id: 3,
@@ -44,8 +46,10 @@ export const BLOG_POSTS_MOCK: BlogPost[] = [
     publishedAt: '2026-01-28',
     readTimeMinutes: 5,
     tags: ['Gestión', 'Productividad', 'Equipo'],
-    enlaces: []
+    enlaces: [],
+    authors: ['Equipo Novacore']
   }
 ];
+
 
 

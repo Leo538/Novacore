@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BlogPost, BlogPostLink } from '../../shared/models/blog-post.model';
 import { ButtonComponent } from '../../components/button/button.component';
 import { BlogApiService } from './services/blog-api.service';
@@ -14,24 +15,46 @@ import { BlogApiService } from './services/blog-api.service';
 })
 export class BlogComponent implements OnInit {
   private blogApi = inject(BlogApiService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   posts: BlogPost[] = [];
   loading = true;
   error: string | null = null;
 
-  selectedPost: BlogPost | null = null;
   isCreateModalOpen = false;
   isEditModalOpen = false;
   saving = false;
   editingPostId: number | null = null;
+  /** Mensaje de error al guardar (ej. servidor no disponible). */
+  modalError: string | null = null;
+
+  defaultImage = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600';
 
   draftPost: Partial<BlogPost> = {
     title: '',
     content: '',
     excerpt: '',
-    publishedAt: new Date().toISOString().slice(0, 16),
+    publishedAt: this.getTodayDateString(),
+    imageUrl: '',
+    imageAlt: '',
+    authors: [],
     enlaces: []
   };
+
+  private readonly maxAuthors = 6;
+
+  getTodayDateString(): string {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  /** Fecha formateada para mostrar en el campo bloqueado (Nueva entrada). */
+  get displayDateCreate(): string {
+    const raw = this.draftPost.publishedAt ?? this.getTodayDateString();
+    const [y, m, d] = raw.slice(0, 10).split('-');
+    return `${d}/${m}/${y}`;
+  }
 
   ngOnInit(): void {
     this.loadPosts();
@@ -44,6 +67,11 @@ export class BlogComponent implements OnInit {
       next: (list) => {
         this.posts = list;
         this.loading = false;
+        const editId = this.activatedRoute.snapshot.queryParams['edit'];
+        if (editId) {
+          const post = list.find((p) => p.id === Number(editId));
+          if (post) this.openEditModal(post);
+        }
       },
       error: (err) => {
         this.error = 'No se pudieron cargar las entradas. Comprueba que el backend esté en marcha.';
@@ -53,11 +81,15 @@ export class BlogComponent implements OnInit {
   }
 
   openCreateModal(): void {
+    this.modalError = null;
     this.draftPost = {
       title: '',
       content: '',
       excerpt: '',
-      publishedAt: new Date().toISOString().slice(0, 16),
+      publishedAt: this.getTodayDateString(),
+      imageUrl: '',
+      imageAlt: '',
+      authors: [''],
       enlaces: []
     };
     this.isCreateModalOpen = true;
@@ -66,28 +98,42 @@ export class BlogComponent implements OnInit {
   }
 
   openEditModal(post: BlogPost): void {
+    this.modalError = null;
     this.editingPostId = post.id;
+    const authors = (post.authors ?? []).slice(0, this.maxAuthors);
     this.draftPost = {
       title: post.title,
       content: post.content,
       excerpt: post.excerpt,
-      publishedAt: post.publishedAt?.slice(0, 16) ?? new Date().toISOString().slice(0, 16),
+      publishedAt: post.publishedAt?.slice(0, 10) ?? this.getTodayDateString(),
+      imageUrl: post.imageUrl ?? '',
+      imageAlt: post.imageAlt ?? '',
+      authors: authors.length > 0 ? authors : [''],
       enlaces: post.enlaces?.length ? [...post.enlaces] : []
     };
     this.isEditModalOpen = true;
     this.isCreateModalOpen = false;
-    this.selectedPost = null;
   }
 
   closeCreateModal(): void {
     this.isCreateModalOpen = false;
     this.isEditModalOpen = false;
     this.editingPostId = null;
+    this.modalError = null;
   }
 
   closeEditModal(): void {
     this.isEditModalOpen = false;
     this.editingPostId = null;
+    this.modalError = null;
+  }
+
+  /** True si título, descripción y al menos un autor están rellenados. */
+  get isFormValid(): boolean {
+    const titleOk = !!this.draftPost.title?.trim();
+    const contentOk = !!this.draftPost.content?.trim();
+    const authors = (this.draftPost.authors ?? []).map(a => a?.trim()).filter(Boolean);
+    return titleOk && contentOk && authors.length >= 1;
   }
 
   addEnlace(): void {
@@ -101,60 +147,99 @@ export class BlogComponent implements OnInit {
     this.draftPost = { ...this.draftPost, enlaces };
   }
 
+  addAuthor(): void {
+    const authors = this.draftPost.authors ?? [];
+    if (authors.length >= this.maxAuthors) return;
+    this.draftPost = { ...this.draftPost, authors: [...authors, ''] };
+  }
+
+  removeAuthor(index: number): void {
+    const authors = [...(this.draftPost.authors ?? [])];
+    if (authors.length <= 1) return;
+    authors.splice(index, 1);
+    this.draftPost = { ...this.draftPost, authors };
+  }
+
+  onImageFileSelected(event: Event, input: HTMLInputElement): void {
+    const file = (event.target as HTMLInputElement)?.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.draftPost = {
+        ...this.draftPost,
+        imageUrl: reader.result as string,
+        imageAlt: this.draftPost.imageAlt || file.name
+      };
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  clearImage(): void {
+    this.draftPost = { ...this.draftPost, imageUrl: '', imageAlt: '' };
+  }
+
+  /** Devuelve la lista de autores con al menos uno rellenado; si no, null. */
+  private getValidAuthors(): string[] | null {
+    const list = (this.draftPost.authors ?? []).map(a => a?.trim()).filter(Boolean);
+    return list.length >= 1 ? list : null;
+  }
+
   saveCreate(): void {
-    if (!this.draftPost.title?.trim() || !this.draftPost.content?.trim()) return;
+    const authors = this.getValidAuthors();
+    if (!this.draftPost.title?.trim() || !this.draftPost.content?.trim() || !authors) return;
+    this.modalError = null;
     this.saving = true;
     const payload = {
       ...this.draftPost,
-      excerpt: this.draftPost.excerpt ?? this.draftPost.content?.slice(0, 160) ?? ''
+      publishedAt: this.getTodayDateString(),
+      excerpt: this.draftPost.excerpt ?? this.draftPost.content?.slice(0, 160) ?? '',
+      authors
     };
     this.blogApi.create(payload).subscribe({
       next: (created) => {
         this.saving = false;
+        this.modalError = null;
         if (created) {
           this.loadPosts();
           this.closeCreateModal();
         }
       },
-      error: () => { this.saving = false; }
+      error: () => {
+        this.saving = false;
+        this.modalError = 'No se pudo guardar. Comprueba que el servidor esté en marcha (puerto 3000).';
+      }
     });
   }
 
   saveEdit(): void {
-    if (this.editingPostId == null || !this.draftPost.title?.trim() || !this.draftPost.content?.trim()) return;
+    const authors = this.getValidAuthors();
+    if (this.editingPostId == null || !this.draftPost.title?.trim() || !this.draftPost.content?.trim() || !authors) return;
+    this.modalError = null;
     this.saving = true;
     const payload = {
       ...this.draftPost,
-      excerpt: this.draftPost.excerpt ?? this.draftPost.content?.slice(0, 160) ?? ''
+      excerpt: this.draftPost.excerpt ?? this.draftPost.content?.slice(0, 160) ?? '',
+      authors
     };
     this.blogApi.update(this.editingPostId, payload).subscribe({
       next: (updated) => {
         this.saving = false;
+        this.modalError = null;
         if (updated) {
           this.loadPosts();
           this.closeEditModal();
         }
       },
-      error: () => { this.saving = false; }
-    });
-  }
-
-  deletePost(post: BlogPost): void {
-    if (!confirm('¿Eliminar esta entrada?')) return;
-    this.blogApi.delete(post.id).subscribe(ok => {
-      if (ok) {
-        this.loadPosts();
-        this.closePost();
+      error: () => {
+        this.saving = false;
+        this.modalError = 'No se pudo guardar. Comprueba que el servidor esté en marcha (puerto 3000).';
       }
     });
   }
 
-  openPost(post: BlogPost): void {
-    this.selectedPost = post;
-  }
-
-  closePost(): void {
-    this.selectedPost = null;
+  goToPost(post: BlogPost): void {
+    this.router.navigate(['/blog/post', post.id]);
   }
 
   trackByIndex(i: number): number {

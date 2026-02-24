@@ -30,7 +30,7 @@ export class ServiciosComponent implements OnInit {
     {
       title: 'Cloud & DevOps',
       description: 'Infraestructura escalable en AWS y Azure con despliegue continuo.',
-      imageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc51?w=600',
+      imageUrl: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=900',
       imageAlt: 'Arquitectura Cloud y DevOps',
       price: 'Escalabilidad'
     },
