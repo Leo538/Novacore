@@ -47,6 +47,14 @@
   font-weight: 800;
 }
 
+.swiper-button-next::after {
+  content: '>' !important;
+}
+
+.swiper-button-prev::after {
+  content: '<' !important;
+}
+
 .swiper-button-next {
   right: 10px !important;
 }
