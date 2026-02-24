@@ -12,6 +12,7 @@ export class ButtonComponent {
   @Input() variant: 'primary' | 'secondary' = 'primary';
   @Input() href?: string;
   @Input() target?: string;
+  @Input() text?: string;
   @Output() click = new EventEmitter<MouseEvent>();
 
   onClick(event: MouseEvent): void {

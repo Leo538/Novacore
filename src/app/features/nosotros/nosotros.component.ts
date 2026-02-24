@@ -14,46 +14,46 @@ import { TeamMember } from '../../shared/models/team-member.model';
 export class NosotrosComponent implements OnInit {
   teamMembers: TeamMember[] = [
     {
-      name: 'Johan',
-      imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800',
+      name: 'Johan Rodríguez',
+      imageUrl: '/img/johan.png',
       imageAlt: 'Johan',
-      description: 'Ingeniero de Software especializado en Front-End y arquitectura de soluciones digitales robustas.',
-      profileLink: 'perfil-johan.html'
+      description: 'Ingeniero de Software especializado en Front-End y en diseño UX/UI.',
+      profileLink: 'https://kiramman-mp3.github.io/'
     },
     {
-      name: 'Christian',
-      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
-      imageAlt: 'Christian',
+      name: 'Diego Jijón',
+      imageUrl: '/img/diego.png',
+      imageAlt: 'Diego',
       description: 'Especialista en Unity, Clean Architecture y desarrollo de sistemas interactivos a medida.',
-      profileLink: 'perfil-christian.html'
+      profileLink: 'https://diego200509.github.io/DiegoJijon.github.io/'
     },
     {
       name: 'Ariel Paredes Lozada',
-      imageUrl: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=800',
-      imageAlt: 'Mateo',
+      imageUrl: '/img/ariel.jpg',
+      imageAlt: 'Ariel',
       description: 'Experto en backend con Node y Typescript. Arquitecto de bases de datos',
       profileLink: 'https://arielparedeslozada.github.io/'
     },
     {
-      name: 'Andrés',
-      imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800',
-      imageAlt: 'Andrés',
+      name: 'Elkin López',
+      imageUrl: '/img/elkin.png',
+      imageAlt: 'Elkin',
       description: 'Desarrollador Full Stack con enfoque en bases de datos relacionales e integración de servicios.',
-      profileLink: 'perfil-andres.html'
+      profileLink: 'https://elkinnn.github.io/ElkinLopez.github.io/'
     },
     {
-      name: 'Santi',
-      imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800',
-      imageAlt: 'Santi',
+      name: 'Leonel Barros',
+      imageUrl: '/img/leonel.png',
+      imageAlt: 'Leonel',
       description: 'Ingeniero DevOps enfocado en la automatización de procesos y optimización de flujos de trabajo.',
-      profileLink: 'perfil-santi.html'
+      profileLink: 'https://my-profile-fawn-ten.vercel.app/#about'
     },
     {
-      name: 'Luis',
-      imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800',
-      imageAlt: 'Luis',
+      name: 'José Manzano',
+      imageUrl: '/img/jose.png',
+      imageAlt: 'José',
       description: 'Especialista en UI/UX Design y personalización avanzada de interfaces de usuario.',
-      profileLink: 'perfil-luis.html'
+      profileLink: 'https://josem151.github.io/'
     }
   ];
 
@@ -67,40 +67,40 @@ export class NosotrosComponent implements OnInit {
       const checkSwiper = () => {
         if ((window as any).Swiper) {
           new (window as any).Swiper('.teamSwiper', {
-          slidesPerView: 3,
-          slidesPerGroup: 3,
-          spaceBetween: 30,
-          loop: true,
-          grabCursor: true,
-          autoplay: {
-            delay: 5000,
-            disableOnInteraction: false
-          },
-          pagination: {
-            el: '.team-pagination',
-            clickable: true
-          },
-          navigation: {
-            nextEl: '.team-next',
-            prevEl: '.team-prev'
-          },
-          breakpoints: {
-            320: {
-              slidesPerView: 1,
-              slidesPerGroup: 1,
-              spaceBetween: 10
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+            spaceBetween: 30,
+            loop: true,
+            grabCursor: true,
+            autoplay: {
+              delay: 5000,
+              disableOnInteraction: false
             },
-            768: {
-              slidesPerView: 2,
-              slidesPerGroup: 2,
-              spaceBetween: 20
+            pagination: {
+              el: '.team-pagination',
+              clickable: true
             },
-            1024: {
-              slidesPerView: 3,
-              slidesPerGroup: 3,
-              spaceBetween: 30
+            navigation: {
+              nextEl: '.team-next',
+              prevEl: '.team-prev'
+            },
+            breakpoints: {
+              320: {
+                slidesPerView: 1,
+                slidesPerGroup: 1,
+                spaceBetween: 10
+              },
+              768: {
+                slidesPerView: 2,
+                slidesPerGroup: 2,
+                spaceBetween: 20
+              },
+              1024: {
+                slidesPerView: 3,
+                slidesPerGroup: 3,
+                spaceBetween: 30
+              }
             }
-          }
           });
         } else {
           setTimeout(checkSwiper, 100);
