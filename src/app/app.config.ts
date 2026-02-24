@@ -5,6 +5,7 @@ import {
   provideZoneChangeDetection
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import localeEsEc from '@angular/common/locales/es-EC';
 
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideHttpClient(withFetch()),
     { provide: LOCALE_ID, useValue: 'es-EC' }
   ]
 };
