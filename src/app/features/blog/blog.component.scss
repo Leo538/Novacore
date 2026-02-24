@@ -377,9 +377,7 @@
 }
 
 .blog-autores-form .blog-enlace-row {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  @extend .blog-enlace-row;
 }
 
 .blog-modal-error {
@@ -399,8 +397,7 @@
   gap: 0.8rem;
 }
 
-.btn-primary,
-.btn-secondary {
+%btn-base {
   border-radius: 999px;
   padding: 0.65rem 1.3rem;
   font-size: 0.9rem;
@@ -414,16 +411,15 @@
 }
 
 .btn-primary {
+  @extend %btn-base;
   background: var(--primary);
-  color: #ffffff;
+  color: #fff;
   box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
-
   &:hover:not(:disabled) {
     background: var(--primary-hover);
     transform: translateY(-1px);
     box-shadow: 0 14px 36px rgba(37, 99, 235, 0.45);
   }
-
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -431,9 +427,9 @@
 }
 
 .btn-secondary {
+  @extend %btn-base;
   background: #e5e7eb;
   color: #111827;
-
   &:hover {
     background: #d1d5db;
     transform: translateY(-1px);
@@ -552,7 +548,6 @@
   color: #64748b;
   cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
-
   &:hover {
     border-color: var(--primary);
     color: var(--primary);
@@ -574,7 +569,6 @@
   border: 1px solid #e2e8f0;
   font-size: 0.9rem;
   background: #f9fafb;
-
   &:focus {
     outline: none;
     border-color: var(--primary);
@@ -612,16 +606,9 @@
 }
 
 .btn-danger {
-  border-radius: 999px;
-  padding: 0.65rem 1.3rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
+  @extend %btn-base;
   background: #fee2e2;
   color: #b91c1c;
-  transition: background 0.2s, transform 0.16s ease;
-
   &:hover {
     background: #fecaca;
     transform: translateY(-1px);
