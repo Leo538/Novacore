@@ -13,7 +13,8 @@ export const BLOG_POSTS_MOCK: BlogPost[] = [
     imageAlt: 'Arquitectura de software en pizarras',
     publishedAt: '2026-02-20',
     readTimeMinutes: 8,
-    tags: ['Arquitectura', 'SaaS', 'Backend']
+    tags: ['Arquitectura', 'SaaS', 'Backend'],
+    enlaces: []
   },
   {
     id: 2,
@@ -27,7 +28,8 @@ export const BLOG_POSTS_MOCK: BlogPost[] = [
     imageAlt: 'Laptop con código y checklist',
     publishedAt: '2026-02-10',
     readTimeMinutes: 6,
-    tags: ['DevOps', 'Calidad', 'Buenas prácticas']
+    tags: ['DevOps', 'Calidad', 'Buenas prácticas'],
+    enlaces: []
   },
   {
     id: 3,
@@ -41,7 +43,8 @@ export const BLOG_POSTS_MOCK: BlogPost[] = [
     imageAlt: 'Equipo de desarrollo colaborando',
     publishedAt: '2026-01-28',
     readTimeMinutes: 5,
-    tags: ['Gestión', 'Productividad', 'Equipo']
+    tags: ['Gestión', 'Productividad', 'Equipo'],
+    enlaces: []
   }
 ];
 
