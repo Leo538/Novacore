@@ -1,0 +1,138 @@
+<main id="blog" class="blog-page">
+  <section class="blog-hero">
+    <div class="blog-hero-content">
+      <p class="blog-kicker">Blog de Novacore</p>
+      <h1>Historias y aprendizajes desde el código</h1>
+      <p class="blog-subtitle">
+        Aquí documentamos nuestras tareas técnicas, retos de proyectos reales y tips prácticos
+        que usamos en el día a día.
+      </p>
+
+      <div class="blog-actions-hero">
+        <app-button variant="primary" (click)="openCreateModal()">
+          Crear nueva entrada
+        </app-button>
+      </div>
+    </div>
+  </section>
+
+  <section class="blog-list">
+    <div class="blog-grid">
+      @for (post of posts; track post.id) {
+        <article class="blog-card" (click)="openPost(post)">
+          <div class="blog-card-content">
+            <div class="blog-meta">
+              <span class="blog-date">
+                {{ post.publishedAt | date: 'd MMM y' }}
+              </span>
+              <span class="blog-dot"></span>
+              <span class="blog-readtime">{{ post.readTimeMinutes }} min lectura</span>
+            </div>
+
+            <h2 class="blog-title">{{ post.title }}</h2>
+            <p class="blog-excerpt">{{ post.excerpt }}</p>
+
+            <div class="blog-tags">
+              @for (tag of post.tags; track tag) {
+                <span class="blog-tag">#{{ tag }}</span>
+              }
+            </div>
+
+            <div class="blog-actions">
+              <app-button variant="secondary">
+                Ver detalles
+              </app-button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  @if (selectedPost) {
+    <div class="blog-modal-backdrop" (click)="closePost()">
+      <article class="blog-modal" (click)="$event.stopPropagation()">
+        <button class="blog-modal-close" type="button" (click)="closePost()">
+          ✕
+        </button>
+
+        <div class="blog-modal-content">
+          <div class="blog-meta">
+            <span class="blog-date">
+              {{ selectedPost.publishedAt | date: 'd MMM y' }}
+            </span>
+            <span class="blog-dot"></span>
+            <span class="blog-readtime">{{ selectedPost.readTimeMinutes }} min lectura</span>
+          </div>
+
+          <h2 class="blog-title">{{ selectedPost.title }}</h2>
+          <p class="blog-excerpt">{{ selectedPost.excerpt }}</p>
+
+          <p class="blog-content-full">
+            {{ selectedPost.content }}
+          </p>
+
+          <div class="blog-tags">
+            @for (tag of selectedPost.tags; track tag) {
+              <span class="blog-tag">#{{ tag }}</span>
+            }
+          </div>
+        </div>
+      </article>
+    </div>
+  }
+  @if (isCreateModalOpen) {
+    <div class="blog-modal-backdrop" (click)="closeCreateModal()">
+      <article class="blog-modal blog-modal--create" (click)="$event.stopPropagation()">
+        <button class="blog-modal-close" type="button" (click)="closeCreateModal()">
+          ✕
+        </button>
+
+        <div class="blog-modal-content">
+          <h2 class="blog-title">Crear blog</h2>
+          <p class="blog-excerpt">
+            Aquí más adelante conectaremos el formulario con el backend para guardar tus posts.
+          </p>
+
+          <form class="blog-create-form" (ngSubmit)="saveDraft()">
+            <label class="blog-create-field">
+              <span>Título</span>
+              <input type="text" [(ngModel)]="draftPost.title" name="title" placeholder="Título de la entrada" />
+            </label>
+
+            <label class="blog-create-field">
+              <span>Descripción corta</span>
+              <textarea
+                [(ngModel)]="draftPost.excerpt"
+                name="excerpt"
+                rows="3"
+                placeholder="Resumen o descripción de la tarea/proyecto">
+              </textarea>
+            </label>
+
+            <label class="blog-create-field">
+              <span>Contenido (opcional por ahora)</span>
+              <textarea
+                [(ngModel)]="draftPost.content"
+                name="content"
+                rows="5"
+                placeholder="Aquí irá el contenido completo de la entrada">
+              </textarea>
+            </label>
+
+            <div class="blog-create-actions">
+              <button type="button" class="btn-secondary" (click)="closeCreateModal()">
+                Cancelar
+              </button>
+              <button type="submit" class="btn-primary">
+                Guardar borrador (solo frontend)
+              </button>
+            </div>
+          </form>
+        </div>
+      </article>
+    </div>
+  }
+</main>
+
+

@@ -29,7 +29,7 @@ export class NosotrosComponent implements OnInit {
     },
     {
       name: 'Ariel Paredes Lozada',
-      imageUrl: 'assets/images/APL.jpg',
+      imageUrl: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=800',
       imageAlt: 'Mateo',
       description: 'Experto en backend con Node y Typescript. Arquitecto de bases de datos',
       profileLink: 'https://arielparedeslozada.github.io/'

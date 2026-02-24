@@ -1,17 +1,27 @@
 import { Injectable } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { NavigationService } from './navigation.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScrollService {
-  constructor(private navigationService: NavigationService) {
+  constructor(
+    private navigationService: NavigationService,
+    private router: Router
+  ) {
     if (typeof window !== 'undefined') {
-      // Esperar a que el DOM esté listo
-      setTimeout(() => {
-        this.initRevealAnimations();
-        this.initSectionObserver();
-      }, 200);
+      // Re‑inicializar observadores cada vez que se completa una navegación
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe(() => {
+          // Esperar un poco a que Angular pinte el DOM de la nueva vista
+          setTimeout(() => {
+            this.initRevealAnimations();
+            this.initSectionObserver();
+          }, 200);
+        });
     }
   }
 
