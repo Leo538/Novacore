@@ -1,7 +1,10 @@
 <nav class="navbar" [class]="navigationService.currentTheme()" [class.scrolled]="navigationService.isScrolled()" id="main-nav">
   <a href="#" class="logo-container" (click)="scrollToSection('inicio'); $event.preventDefault()">
-    <span class="logo-top">Tech</span>
-    <span class="logo-main">ENGINEERS</span>
+    <img src="/img/NovaCoreSin.png" alt="Novacore" class="logo-image" />
+    <span class="logo-text">
+      <span class="logo-top">Software Studio</span>
+      <span class="logo-main">NOVACORE</span>
+    </span>
   </a>
   <div class="menu-toggle" [class.open]="isMenuOpen()" (click)="toggleMenu()" id="menu-toggle">
     <span></span><span></span><span></span>
