@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build && node scripts/copy-output.js",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+"test": "ng test",
+    "server": "cd server && npm run dev",
+    "backend": "cd server && npm start"
   },
   "prettier": {
     "printWidth": 100,

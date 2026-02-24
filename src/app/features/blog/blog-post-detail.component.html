@@ -1,0 +1,61 @@
+<main class="blog-detail-page">
+  @if (loading) {
+    <p class="blog-detail-state">Cargando…</p>
+  } @else if (error || !post) {
+    <div class="blog-detail-error">
+      <p>{{ error || 'Entrada no encontrada' }}</p>
+      <a routerLink="/blog" class="blog-detail-back">Volver al blog</a>
+    </div>
+  } @else {
+    <article class="blog-detail-article">
+      <nav class="blog-detail-nav" aria-label="Navegación">
+        <a routerLink="/blog" class="blog-detail-back-link">← Volver al blog</a>
+      </nav>
+
+      <div class="blog-detail-image-wrapper">
+          <img
+            [src]="post.imageUrl || defaultImage"
+            [alt]="post.imageAlt || post.title"
+            class="blog-detail-image"
+          />
+        </div>
+
+      <div class="blog-detail-content">
+        <div class="blog-detail-meta">
+          <span class="blog-detail-date">{{ post.publishedAt | date: 'd MMM y, HH:mm' }}</span>
+          <span class="blog-detail-dot"></span>
+          <span class="blog-detail-readtime">{{ post.readTimeMinutes }} min lectura</span>
+        </div>
+
+        <h1 class="blog-detail-title">{{ post.title }}</h1>
+
+        @if (post.authors?.length) {
+          <p class="blog-detail-authors">Por: {{ post.authors.join(', ') }}</p>
+        }
+
+        <p class="blog-detail-body">{{ post.content }}</p>
+
+        @if (post.enlaces?.length) {
+          <div class="blog-detail-enlaces">
+            <h3>Enlaces</h3>
+            <ul>
+              @for (link of post.enlaces; track link.url) {
+                <li>
+                  <a [href]="link.url" target="_blank" rel="noopener noreferrer">
+                    <span aria-hidden="true">↗</span>
+                    {{ link.texto || link.url }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        <div class="blog-detail-actions">
+          <app-button variant="secondary" (click)="goToEdit()">Editar</app-button>
+          <button type="button" class="blog-detail-btn-danger" (click)="deletePost()">Eliminar</button>
+        </div>
+      </div>
+    </article>
+  }
+</main>

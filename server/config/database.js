@@ -8,20 +8,14 @@ const pool = new Pool({
   ssl: env.DATABASE_URL.includes('sslmode=require') ? { rejectUnauthorized: false } : undefined,
 });
 
+/**
+ * Comprueba la conexión a la base de datos.
+ * El esquema se gestiona con migraciones: ejecuta `npm run migrate:up` en server/.
+ */
 export async function initDb() {
   const client = await pool.connect();
   try {
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS blog_posts (
-        id SERIAL PRIMARY KEY,
-        titulo VARCHAR(500) NOT NULL,
-        descripcion TEXT NOT NULL,
-        fecha TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        enlaces JSONB NOT NULL DEFAULT '[]',
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      )
-    `);
+    await client.query('SELECT 1');
   } finally {
     client.release();
   }

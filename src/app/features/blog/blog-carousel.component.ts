@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BlogPost } from '../../shared/models/blog-post.model';
 import { BlogApiService } from './services/blog-api.service';
+import { CardComponent } from '../../components/card/card.component';
+import { ButtonComponent } from '../../components/button/button.component';
 
 @Component({
   selector: 'app-blog-carousel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CardComponent, ButtonComponent],
   templateUrl: './blog-carousel.component.html',
   styleUrl: './blog-carousel.component.scss'
 })
@@ -16,6 +18,8 @@ export class BlogCarouselComponent implements OnInit {
   private blogApi = inject(BlogApiService);
 
   posts: BlogPost[] = [];
+  /** Imagen por defecto cuando el post no tiene imageUrl. */
+  defaultImage = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600';
 
   ngOnInit(): void {
     this.blogApi.getAll().subscribe((list) => {

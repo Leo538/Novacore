@@ -13,22 +13,34 @@ function apiToPost(api: BlogPostApi): BlogPost {
     slug: `post-${api.id}`,
     excerpt,
     content: desc,
-    imageUrl: '',
-    imageAlt: '',
+    imageUrl: api.imageUrl ?? '',
+    imageAlt: api.imageAlt ?? '',
     publishedAt: api.fecha ?? new Date().toISOString(),
     readTimeMinutes: Math.max(1, Math.ceil(desc.length / 400)),
-    tags: [],
-    enlaces: Array.isArray(api.enlaces) ? api.enlaces : []
+    tags: (api as any).tags ?? [],
+    enlaces: Array.isArray(api.enlaces) ? api.enlaces : [],
+    authors: Array.isArray(api.autores) ? api.autores.slice(0, 6) : []
   };
 }
 
-function postToApiBody(post: Partial<BlogPost>): { titulo: string; descripcion: string; fecha?: string; enlaces: BlogPostLink[] } {
+function postToApiBody(post: Partial<BlogPost>): {
+  titulo: string;
+  descripcion: string;
+  fecha?: string;
+  enlaces: BlogPostLink[];
+  imageUrl?: string;
+  imageAlt?: string;
+  autores?: string[];
+} {
   const enlaces = (post.enlaces ?? []).filter(e => e?.url?.trim());
   return {
     titulo: post.title ?? '',
     descripcion: post.content ?? post.excerpt ?? '',
     fecha: post.publishedAt,
-    enlaces
+    enlaces,
+    imageUrl: post.imageUrl,
+    imageAlt: post.imageAlt,
+    autores: (post.authors ?? []).slice(0, 6)
   };
 }
 

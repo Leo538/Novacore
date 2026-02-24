@@ -26,7 +26,15 @@
     } @else {
       <div class="blog-grid">
         @for (post of posts; track post.id) {
-          <article class="blog-card" (click)="openPost(post)">
+          <article class="blog-card" (click)="goToPost(post)">
+            <div class="blog-card-image-wrapper">
+              <img
+                [src]="post.imageUrl || defaultImage"
+                [alt]="post.imageAlt || post.title"
+                class="blog-card-image"
+                loading="lazy"
+              />
+            </div>
             <div class="blog-card-content">
               <div class="blog-meta">
                 <span class="blog-date">{{ post.publishedAt | date: 'd MMM y' }}</span>
@@ -52,47 +60,6 @@
     }
   </section>
 
-  @if (selectedPost) {
-    <div class="blog-modal-backdrop" (click)="closePost()">
-      <article class="blog-modal" (click)="$event.stopPropagation()">
-        <button class="blog-modal-close" type="button" (click)="closePost()">✕</button>
-
-        <div class="blog-modal-content">
-          <div class="blog-meta">
-            <span class="blog-date">{{ selectedPost.publishedAt | date: 'd MMM y, HH:mm' }}</span>
-            <span class="blog-dot"></span>
-            <span class="blog-readtime">{{ selectedPost.readTimeMinutes }} min lectura</span>
-          </div>
-
-          <h2 class="blog-title">{{ selectedPost.title }}</h2>
-          <p class="blog-excerpt">{{ selectedPost.excerpt }}</p>
-          <p class="blog-content-full">{{ selectedPost.content }}</p>
-
-          @if (selectedPost.enlaces.length) {
-            <div class="blog-enlaces-block">
-              <h3 class="blog-enlaces-title">Enlaces</h3>
-              <ul class="blog-enlaces-list">
-                @for (link of selectedPost.enlaces; track link.url) {
-                  <li class="blog-enlaces-item">
-                    <a [href]="link.url" target="_blank" rel="noopener noreferrer" class="blog-enlaces-link">
-                      <span class="blog-enlaces-icon" aria-hidden="true">↗</span>
-                      <span class="blog-enlaces-text">{{ link.texto || link.url }}</span>
-                    </a>
-                  </li>
-                }
-              </ul>
-            </div>
-          }
-
-          <div class="blog-modal-actions">
-            <app-button variant="secondary" (click)="openEditModal(selectedPost)">Editar</app-button>
-            <button type="button" class="btn-danger" (click)="deletePost(selectedPost)">Eliminar</button>
-          </div>
-        </div>
-      </article>
-    </div>
-  }
-
   @if (isCreateModalOpen) {
     <div class="blog-modal-backdrop" (click)="closeCreateModal()">
       <article class="blog-modal blog-modal--create" (click)="$event.stopPropagation()">
@@ -101,35 +68,49 @@
           <h2 class="blog-title">Nueva entrada</h2>
           <form class="blog-create-form" (ngSubmit)="saveCreate()">
             <label class="blog-create-field">
+              <span>Fecha (automática: día actual)</span>
+              <input type="text" [value]="displayDateCreate" name="publishedAt" readonly class="blog-input-readonly" />
+            </label>
+            <label class="blog-create-field">
               <span>Título</span>
               <input type="text" [(ngModel)]="draftPost.title" name="title" placeholder="Título de la entrada" required />
+            </label>
+            <label class="blog-create-field">
+              <span>Imagen</span>
+              <div class="blog-image-upload">
+                <input type="file" #imageInputCreate accept="image/*" (change)="onImageFileSelected($event, imageInputCreate)" class="blog-image-input" />
+                <button type="button" class="btn-choose-image" (click)="imageInputCreate.click()">Seleccionar imagen del dispositivo</button>
+                @if (draftPost.imageUrl) {
+                  <div class="blog-image-preview">
+                    <img [src]="draftPost.imageUrl" alt="Vista previa" />
+                    <button type="button" class="btn-remove-image" (click)="clearImage()" title="Quitar imagen">✕</button>
+                  </div>
+                }
+              </div>
             </label>
             <label class="blog-create-field">
               <span>Descripción / contenido</span>
               <textarea [(ngModel)]="draftPost.content" name="content" rows="5" placeholder="Contenido de la entrada" required></textarea>
             </label>
-            <label class="blog-create-field">
-              <span>Fecha y hora (opcional)</span>
-              <input type="datetime-local" [(ngModel)]="draftPost.publishedAt" name="publishedAt" />
-            </label>
-
-            <div class="blog-enlaces-form">
+            <div class="blog-autores-form">
               <div class="blog-enlaces-form-header">
-                <span class="blog-create-field span-label">Enlaces</span>
-                <button type="button" class="btn-add-link" (click)="addEnlace()">+ Añadir enlace</button>
+                <span class="blog-create-field span-label">Autor o autores (mín. 1, máx. 6)</span>
+                <button type="button" class="btn-add-link" (click)="addAuthor()" [disabled]="(draftPost.authors?.length ?? 0) >= 6">+ Añadir autor</button>
               </div>
-              @for (enlace of draftPost.enlaces; track i; let i = $index) {
+              @for (author of draftPost.authors; track $index; let i = $index) {
                 <div class="blog-enlace-row">
-                  <input type="text" [(ngModel)]="draftPost.enlaces![i].texto" [name]="'texto' + i" placeholder="Texto (opcional)" class="blog-enlace-input" />
-                  <input type="url" [(ngModel)]="draftPost.enlaces![i].url" [name]="'url' + i" placeholder="https://..." class="blog-enlace-input" />
-                  <button type="button" class="btn-remove-link" (click)="removeEnlace(i)" title="Quitar">✕</button>
+                  <input type="text" [(ngModel)]="draftPost.authors![i]" [name]="'author' + i" placeholder="Nombre del autor" class="blog-enlace-input" required />
+                  <button type="button" class="btn-remove-link" (click)="removeAuthor(i)" [disabled]="(draftPost.authors?.length ?? 0) <= 1" title="Quitar">✕</button>
                 </div>
               }
             </div>
 
+            @if (modalError) {
+              <p class="blog-modal-error">{{ modalError }}</p>
+            }
             <div class="blog-create-actions">
               <button type="button" class="btn-secondary" (click)="closeCreateModal()">Cancelar</button>
-              <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando…' : 'Guardar' }}</button>
+              <button type="submit" class="btn-primary" [disabled]="saving || !isFormValid">{{ saving ? 'Guardando…' : 'Guardar' }}</button>
             </div>
           </form>
         </div>
@@ -145,35 +126,49 @@
           <h2 class="blog-title">Editar entrada</h2>
           <form class="blog-create-form" (ngSubmit)="saveEdit()">
             <label class="blog-create-field">
+              <span>Fecha</span>
+              <input type="text" [(ngModel)]="draftPost.publishedAt" name="publishedAtEdit" placeholder="AAAA-MM-DD" />
+            </label>
+            <label class="blog-create-field">
               <span>Título</span>
               <input type="text" [(ngModel)]="draftPost.title" name="titleEdit" placeholder="Título" required />
+            </label>
+            <label class="blog-create-field">
+              <span>Imagen</span>
+              <div class="blog-image-upload">
+                <input type="file" #imageInputEdit accept="image/*" (change)="onImageFileSelected($event, imageInputEdit)" class="blog-image-input" />
+                <button type="button" class="btn-choose-image" (click)="imageInputEdit.click()">Seleccionar imagen del dispositivo</button>
+                @if (draftPost.imageUrl) {
+                  <div class="blog-image-preview">
+                    <img [src]="draftPost.imageUrl" alt="Vista previa" />
+                    <button type="button" class="btn-remove-image" (click)="clearImage()" title="Quitar imagen">✕</button>
+                  </div>
+                }
+              </div>
             </label>
             <label class="blog-create-field">
               <span>Descripción / contenido</span>
               <textarea [(ngModel)]="draftPost.content" name="contentEdit" rows="5" placeholder="Contenido" required></textarea>
             </label>
-            <label class="blog-create-field">
-              <span>Fecha y hora</span>
-              <input type="datetime-local" [(ngModel)]="draftPost.publishedAt" name="publishedAtEdit" />
-            </label>
-
-            <div class="blog-enlaces-form">
+            <div class="blog-autores-form">
               <div class="blog-enlaces-form-header">
-                <span class="blog-create-field span-label">Enlaces</span>
-                <button type="button" class="btn-add-link" (click)="addEnlace()">+ Añadir enlace</button>
+                <span class="blog-create-field span-label">Autor o autores (mín. 1, máx. 6)</span>
+                <button type="button" class="btn-add-link" (click)="addAuthor()" [disabled]="(draftPost.authors?.length ?? 0) >= 6">+ Añadir autor</button>
               </div>
-              @for (enlace of draftPost.enlaces; track i; let i = $index) {
+              @for (author of draftPost.authors; track $index; let i = $index) {
                 <div class="blog-enlace-row">
-                  <input type="text" [(ngModel)]="draftPost.enlaces![i].texto" [name]="'textoEdit' + i" placeholder="Texto (opcional)" class="blog-enlace-input" />
-                  <input type="url" [(ngModel)]="draftPost.enlaces![i].url" [name]="'urlEdit' + i" placeholder="https://..." class="blog-enlace-input" />
-                  <button type="button" class="btn-remove-link" (click)="removeEnlace(i)" title="Quitar">✕</button>
+                  <input type="text" [(ngModel)]="draftPost.authors![i]" [name]="'authorEdit' + i" placeholder="Nombre del autor" class="blog-enlace-input" required />
+                  <button type="button" class="btn-remove-link" (click)="removeAuthor(i)" [disabled]="(draftPost.authors?.length ?? 0) <= 1" title="Quitar">✕</button>
                 </div>
               }
             </div>
 
+            @if (modalError) {
+              <p class="blog-modal-error">{{ modalError }}</p>
+            }
             <div class="blog-create-actions">
               <button type="button" class="btn-secondary" (click)="closeEditModal()">Cancelar</button>
-              <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando…' : 'Guardar cambios' }}</button>
+              <button type="submit" class="btn-primary" [disabled]="saving || !isFormValid">{{ saving ? 'Guardando…' : 'Guardar cambios' }}</button>
             </div>
           </form>
         </div>
