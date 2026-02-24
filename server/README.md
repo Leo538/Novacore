@@ -1,6 +1,6 @@
 # Backend Novacore – Blog API
 
-API REST para el blog de Novacore con MongoDB.
+API REST para el blog de Novacore con **Neon (PostgreSQL)**.
 
 ## Campos del blog
 
@@ -14,14 +14,14 @@ API REST para el blog de Novacore con MongoDB.
 ## Configuración
 
 1. En la carpeta `server`, crea un archivo `.env` (puedes copiar `.env.example`).
-2. Define `MONGODB_URI` con tu cadena de conexión de MongoDB Atlas.
+2. Define `DATABASE_URL` con tu cadena de conexión de Neon (PostgreSQL).
 3. Opcional: `PORT` (por defecto 3000).
 
 Ejemplo `.env`:
 
 ```env
 PORT=3000
-MONGODB_URI=mongodb+srv://barros11:leonel20@cluster0.iclujgn.mongodb.net/novacore
+DATABASE_URL=postgresql://user:password@host/database?sslmode=require
 ```
 
 **Importante:** No subas el archivo `.env` a Git (contiene credenciales).
@@ -62,3 +62,25 @@ La API quedará en `http://localhost:3000`.
 ```
 
 `fecha` y `enlaces` son opcionales. Si no envías `fecha`, se usa la fecha actual.
+
+Los IDs de los posts son numéricos (por ejemplo `1`, `2`).
+
+## Estructura del proyecto
+
+```
+server/
+├── index.js              # Entrada: carga env, init DB, arranca app
+├── app.js                # Express: middleware, rutas, manejador de errores
+├── config/
+│   ├── env.js            # Validación de variables de entorno
+│   └── database.js       # Pool PostgreSQL e initDb
+├── controllers/
+│   └── blog.controller.js   # Lógica de petición/respuesta del blog
+├── services/
+│   └── blog.service.js   # Lógica de negocio y acceso a BD
+├── routes/
+│   └── blog.routes.js    # Definición de rutas /api/blog
+└── middleware/
+    ├── validateId.js     # Valida :id como entero
+    └── errorHandler.js   # Respuesta centralizada de errores
+```
