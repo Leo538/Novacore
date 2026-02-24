@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import blogRoutes from './routes/blog.routes.js';
+import uploadRoutes from './routes/upload.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
@@ -13,6 +14,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/blog', blogRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.use(errorHandler);
 
