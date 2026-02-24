@@ -39,7 +39,7 @@ body {
   transform: translateY(0);
 }
 
-/* Importar Swiper styles */
+/* Importar Swiper styles - usando @import para compatibilidad con CSS externo */
 @import 'swiper/css';
 @import 'swiper/css/navigation';
 @import 'swiper/css/pagination';
