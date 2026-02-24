@@ -26,7 +26,15 @@
     } @else {
       <div class="blog-grid">
         @for (post of posts; track post.id) {
-          <article class="blog-card" (click)="openPost(post)">
+          <article class="blog-card" (click)="goToPost(post)">
+            <div class="blog-card-image-wrapper">
+              <img
+                [src]="post.imageUrl || defaultImage"
+                [alt]="post.imageAlt || post.title"
+                class="blog-card-image"
+                loading="lazy"
+              />
+            </div>
             <div class="blog-card-content">
               <div class="blog-meta">
                 <span class="blog-date">{{ post.publishedAt | date: 'd MMM y' }}</span>
@@ -51,47 +59,6 @@
       </div>
     }
   </section>
-
-  @if (selectedPost) {
-    <div class="blog-modal-backdrop" (click)="closePost()">
-      <article class="blog-modal" (click)="$event.stopPropagation()">
-        <button class="blog-modal-close" type="button" (click)="closePost()">✕</button>
-
-        <div class="blog-modal-content">
-          <div class="blog-meta">
-            <span class="blog-date">{{ selectedPost.publishedAt | date: 'd MMM y, HH:mm' }}</span>
-            <span class="blog-dot"></span>
-            <span class="blog-readtime">{{ selectedPost.readTimeMinutes }} min lectura</span>
-          </div>
-
-          <h2 class="blog-title">{{ selectedPost.title }}</h2>
-          <p class="blog-excerpt">{{ selectedPost.excerpt }}</p>
-          <p class="blog-content-full">{{ selectedPost.content }}</p>
-
-          @if (selectedPost.enlaces.length) {
-            <div class="blog-enlaces-block">
-              <h3 class="blog-enlaces-title">Enlaces</h3>
-              <ul class="blog-enlaces-list">
-                @for (link of selectedPost.enlaces; track link.url) {
-                  <li class="blog-enlaces-item">
-                    <a [href]="link.url" target="_blank" rel="noopener noreferrer" class="blog-enlaces-link">
-                      <span class="blog-enlaces-icon" aria-hidden="true">↗</span>
-                      <span class="blog-enlaces-text">{{ link.texto || link.url }}</span>
-                    </a>
-                  </li>
-                }
-              </ul>
-            </div>
-          }
-
-          <div class="blog-modal-actions">
-            <app-button variant="secondary" (click)="openEditModal(selectedPost)">Editar</app-button>
-            <button type="button" class="btn-danger" (click)="deletePost(selectedPost)">Eliminar</button>
-          </div>
-        </div>
-      </article>
-    </div>
-  }
 
   @if (isCreateModalOpen) {
     <div class="blog-modal-backdrop" (click)="closeCreateModal()">

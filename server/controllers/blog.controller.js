@@ -23,11 +23,11 @@ export async function getById(req, res, next) {
 
 export async function create(req, res, next) {
   try {
-    const { titulo, descripcion, fecha, enlaces, imagenes, autores } = req.body;
+    const { titulo, descripcion, fecha, enlaces, imagenes, imageUrl, imageAlt, autores } = req.body;
     if (!titulo || !descripcion) {
       return res.status(400).json({ error: 'titulo y descripcion son obligatorios' });
     }
-    const post = await blogService.create({ titulo, descripcion, fecha, enlaces, imagenes, autores });
+    const post = await blogService.create({ titulo, descripcion, fecha, enlaces, imagenes, imageUrl, imageAlt, autores });
     res.status(201).json(post);
   } catch (err) {
     next(err);
@@ -36,13 +36,15 @@ export async function create(req, res, next) {
 
 export async function update(req, res, next) {
   try {
-    const { titulo, descripcion, fecha, enlaces, imagenes, autores } = req.body;
+    const { titulo, descripcion, fecha, enlaces, imagenes, imageUrl, imageAlt, autores } = req.body;
     const post = await blogService.update(req.params.id, {
       titulo,
       descripcion,
       fecha,
       enlaces,
       imagenes,
+      imageUrl,
+      imageAlt,
       autores,
     });
     if (!post) {

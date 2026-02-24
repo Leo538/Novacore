@@ -3,14 +3,18 @@ import { pool } from '../config/database.js';
 const COLS = 'id, titulo, descripcion, fecha, enlaces, imagenes, autores, created_at, updated_at';
 
 function rowToPost(row) {
+  const imagenes = row.imagenes ?? [];
+  const primera = Array.isArray(imagenes) ? imagenes[0] : null;
   return {
     id: row.id,
     titulo: row.titulo,
     descripcion: row.descripcion,
     fecha: row.fecha,
     enlaces: row.enlaces ?? [],
-    imagenes: row.imagenes ?? [],
+    imagenes,
     autores: row.autores ?? [],
+    imageUrl: primera?.url ?? '',
+    imageAlt: primera?.alt ?? '',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -32,10 +36,13 @@ export async function findById(id) {
 }
 
 export async function create(data) {
-  const { titulo, descripcion, fecha, enlaces, imagenes, autores } = data;
+  const { titulo, descripcion, fecha, enlaces, imagenes, imageUrl, imageAlt, autores } = data;
   const enlacesVal = Array.isArray(enlaces) ? enlaces : [];
-  const imagenesVal = Array.isArray(imagenes) ? imagenes : [];
-  const autoresVal = Array.isArray(autores) ? autores : [];
+  let imagenesVal = Array.isArray(imagenes) ? imagenes : [];
+  if (imageUrl) {
+    imagenesVal = [{ url: imageUrl, alt: imageAlt || '' }];
+  }
+  const autoresVal = Array.isArray(autores) ? autores.slice(0, 6) : [];
   const fechaVal = fecha ? new Date(fecha) : new Date();
   const { rows } = await pool.query(
     `INSERT INTO blog_posts (titulo, descripcion, fecha, enlaces, imagenes, autores, updated_at)
@@ -47,7 +54,7 @@ export async function create(data) {
 }
 
 export async function update(id, data) {
-  const { titulo, descripcion, fecha, enlaces, imagenes, autores } = data;
+  const { titulo, descripcion, fecha, enlaces, imagenes, imageUrl, imageAlt, autores } = data;
   const updates = [];
   const values = [];
   let i = 1;
@@ -67,13 +74,17 @@ export async function update(id, data) {
     updates.push(`enlaces = $${i++}`);
     values.push(JSON.stringify(Array.isArray(enlaces) ? enlaces : []));
   }
-  if (imagenes !== undefined) {
+  if (imageUrl !== undefined) {
+    const imagenesVal = [{ url: imageUrl, alt: imageAlt || '' }];
+    updates.push(`imagenes = $${i++}`);
+    values.push(JSON.stringify(imagenesVal));
+  } else if (imagenes !== undefined) {
     updates.push(`imagenes = $${i++}`);
     values.push(JSON.stringify(Array.isArray(imagenes) ? imagenes : []));
   }
   if (autores !== undefined) {
     updates.push(`autores = $${i++}`);
-    values.push(JSON.stringify(Array.isArray(autores) ? autores : []));
+    values.push(JSON.stringify(Array.isArray(autores) ? autores.slice(0, 6) : []));
   }
   if (updates.length === 0) {
     return findById(id);

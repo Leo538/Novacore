@@ -31,4 +31,7 @@ export interface BlogPostApi {
   updatedAt: string;
   /** Autores (opcional, hasta 6). */
   autores?: string[];
+  /** Imagen principal (url puede ser data URL o URL externa). */
+  imageUrl?: string;
+  imageAlt?: string;
 }

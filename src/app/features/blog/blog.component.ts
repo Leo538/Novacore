@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BlogPost, BlogPostLink } from '../../shared/models/blog-post.model';
 import { ButtonComponent } from '../../components/button/button.component';
 import { BlogApiService } from './services/blog-api.service';
@@ -14,18 +15,21 @@ import { BlogApiService } from './services/blog-api.service';
 })
 export class BlogComponent implements OnInit {
   private blogApi = inject(BlogApiService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
 
   posts: BlogPost[] = [];
   loading = true;
   error: string | null = null;
 
-  selectedPost: BlogPost | null = null;
   isCreateModalOpen = false;
   isEditModalOpen = false;
   saving = false;
   editingPostId: number | null = null;
   /** Mensaje de error al guardar (ej. servidor no disponible). */
   modalError: string | null = null;
+
+  defaultImage = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600';
 
   draftPost: Partial<BlogPost> = {
     title: '',
@@ -63,6 +67,11 @@ export class BlogComponent implements OnInit {
       next: (list) => {
         this.posts = list;
         this.loading = false;
+        const editId = this.activatedRoute.snapshot.queryParams['edit'];
+        if (editId) {
+          const post = list.find((p) => p.id === Number(editId));
+          if (post) this.openEditModal(post);
+        }
       },
       error: (err) => {
         this.error = 'No se pudieron cargar las entradas. Comprueba que el backend esté en marcha.';
@@ -104,7 +113,6 @@ export class BlogComponent implements OnInit {
     };
     this.isEditModalOpen = true;
     this.isCreateModalOpen = false;
-    this.selectedPost = null;
   }
 
   closeCreateModal(): void {
@@ -230,22 +238,8 @@ export class BlogComponent implements OnInit {
     });
   }
 
-  deletePost(post: BlogPost): void {
-    if (!confirm('¿Eliminar esta entrada?')) return;
-    this.blogApi.delete(post.id).subscribe(ok => {
-      if (ok) {
-        this.loadPosts();
-        this.closePost();
-      }
-    });
-  }
-
-  openPost(post: BlogPost): void {
-    this.selectedPost = post;
-  }
-
-  closePost(): void {
-    this.selectedPost = null;
+  goToPost(post: BlogPost): void {
+    this.router.navigate(['/blog/post', post.id]);
   }
 
   trackByIndex(i: number): number {
