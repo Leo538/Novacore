@@ -25,15 +25,15 @@ export class ProyectosComponent implements OnInit {
     if (typeof window !== 'undefined') {
       const checkSwiper = () => {
         if ((window as any).Swiper) {
+          const minSlidesForLoop = 4; // Mínimo de slides para loop con 3 visibles
+          const canLoop = this.projects.length >= minSlidesForLoop;
+          
           new (window as any).Swiper('.projectsSwiper', {
             slidesPerView: 1,
             spaceBetween: 24,
-            loop: true,
+            loop: canLoop,
             grabCursor: true,
-            autoplay: {
-              delay: 4500,
-              disableOnInteraction: false
-            },
+            autoplay: canLoop ? { delay: 4500, disableOnInteraction: false } : false,
             pagination: {
               el: '.projects-swiper-pagination',
               clickable: true
