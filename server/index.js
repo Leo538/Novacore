@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
+import { initDb } from './db.js';
 import blogRoutes from './routes/blog.js';
 
 const app = express();
@@ -16,21 +16,20 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, message: 'API Novacore Blog' });
 });
 
-const MONGODB_URI = process.env.MONGODB_URI;
-if (!MONGODB_URI) {
-  console.error('Falta MONGODB_URI en .env');
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
+  console.error('Falta DATABASE_URL en .env');
   process.exit(1);
 }
 
-mongoose
-  .connect(MONGODB_URI)
+initDb()
   .then(() => {
-    console.log('Conectado a MongoDB');
+    console.log('Base de datos lista (Neon PostgreSQL)');
     app.listen(PORT, () => {
       console.log(`Servidor en http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
-    console.error('Error conectando a MongoDB:', err.message);
+    console.error('Error con la base de datos:', err.message);
     process.exit(1);
   });
