@@ -1,0 +1,39 @@
+.hero {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%),
+    url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+}
+
+.hero-content {
+  h1 {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 800;
+    max-width: 1000px;
+    margin: 0 auto;
+
+    .highlight {
+      color: var(--accent);
+    }
+  }
+
+  p {
+    line-height: 1.8;
+    margin-top: 1.5rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.2rem;
+  }
+
+  .reveal-btn {
+    margin-top: 4.5rem;
+  }
+}
+

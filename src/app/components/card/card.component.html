@@ -1,0 +1,28 @@
+<article class="offer-card">
+  @if (imageUrl) {
+    <div class="card-img-wrapper">
+      <img [src]="imageUrl" [alt]="imageAlt" class="card-img" loading="lazy" />
+    </div>
+  }
+  <div class="card-info">
+    @if (title) {
+      <h3>{{ title }}</h3>
+    }
+    @if (description) {
+      <p class="card-description">{{ description }}</p>
+    }
+    @if (price) {
+      <div class="price-container">
+        <span class="price-new">{{ price }}</span>
+      </div>
+    }
+    @if (showButton && buttonText) {
+      <div class="team-btn-wrapper">
+        <app-button variant="secondary" [href]="buttonLink">
+          {{ buttonText }}
+        </app-button>
+      </div>
+    }
+  </div>
+</article>
+

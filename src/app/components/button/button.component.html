@@ -1,0 +1,10 @@
+@if (href) {
+  <a [href]="href" [target]="target" [class]="'btn-' + variant" class="btn" (click)="onClick($event)">
+    <ng-content></ng-content>
+  </a>
+} @else {
+  <button [class]="'btn-' + variant" class="btn" type="button" (click)="onClick($event)">
+    <ng-content></ng-content>
+  </button>
+}
+
