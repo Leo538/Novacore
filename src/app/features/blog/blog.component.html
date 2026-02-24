@@ -17,116 +17,163 @@
   </section>
 
   <section class="blog-list">
-    <div class="blog-grid">
-      @for (post of posts; track post.id) {
-        <article class="blog-card" (click)="openPost(post)">
-          <div class="blog-card-content">
-            <div class="blog-meta">
-              <span class="blog-date">
-                {{ post.publishedAt | date: 'd MMM y' }}
-              </span>
-              <span class="blog-dot"></span>
-              <span class="blog-readtime">{{ post.readTimeMinutes }} min lectura</span>
-            </div>
-
-            <h2 class="blog-title">{{ post.title }}</h2>
-            <p class="blog-excerpt">{{ post.excerpt }}</p>
-
-            <div class="blog-tags">
-              @for (tag of post.tags; track tag) {
-                <span class="blog-tag">#{{ tag }}</span>
+    @if (loading) {
+      <p class="blog-state-message">Cargando entradas…</p>
+    } @else if (error) {
+      <p class="blog-state-message blog-state-message--error">{{ error }}</p>
+    } @else if (posts.length === 0) {
+      <p class="blog-state-message">Aún no hay entradas. Crea la primera.</p>
+    } @else {
+      <div class="blog-grid">
+        @for (post of posts; track post.id) {
+          <article class="blog-card" (click)="openPost(post)">
+            <div class="blog-card-content">
+              <div class="blog-meta">
+                <span class="blog-date">{{ post.publishedAt | date: 'd MMM y' }}</span>
+                <span class="blog-dot"></span>
+                <span class="blog-readtime">{{ post.readTimeMinutes }} min lectura</span>
+              </div>
+              <h2 class="blog-title">{{ post.title }}</h2>
+              <p class="blog-excerpt">{{ post.excerpt }}</p>
+              @if (post.tags.length) {
+                <div class="blog-tags">
+                  @for (tag of post.tags; track tag) {
+                    <span class="blog-tag">#{{ tag }}</span>
+                  }
+                </div>
               }
+              <div class="blog-actions">
+                <app-button variant="secondary">Ver detalles</app-button>
+              </div>
             </div>
-
-            <div class="blog-actions">
-              <app-button variant="secondary">
-                Ver detalles
-              </app-button>
-            </div>
-          </div>
-        </article>
-      }
-    </div>
+          </article>
+        }
+      </div>
+    }
   </section>
 
   @if (selectedPost) {
     <div class="blog-modal-backdrop" (click)="closePost()">
       <article class="blog-modal" (click)="$event.stopPropagation()">
-        <button class="blog-modal-close" type="button" (click)="closePost()">
-          ✕
-        </button>
+        <button class="blog-modal-close" type="button" (click)="closePost()">✕</button>
 
         <div class="blog-modal-content">
           <div class="blog-meta">
-            <span class="blog-date">
-              {{ selectedPost.publishedAt | date: 'd MMM y' }}
-            </span>
+            <span class="blog-date">{{ selectedPost.publishedAt | date: 'd MMM y, HH:mm' }}</span>
             <span class="blog-dot"></span>
             <span class="blog-readtime">{{ selectedPost.readTimeMinutes }} min lectura</span>
           </div>
 
           <h2 class="blog-title">{{ selectedPost.title }}</h2>
           <p class="blog-excerpt">{{ selectedPost.excerpt }}</p>
+          <p class="blog-content-full">{{ selectedPost.content }}</p>
 
-          <p class="blog-content-full">
-            {{ selectedPost.content }}
-          </p>
+          @if (selectedPost.enlaces.length) {
+            <div class="blog-enlaces-block">
+              <h3 class="blog-enlaces-title">Enlaces</h3>
+              <ul class="blog-enlaces-list">
+                @for (link of selectedPost.enlaces; track link.url) {
+                  <li class="blog-enlaces-item">
+                    <a [href]="link.url" target="_blank" rel="noopener noreferrer" class="blog-enlaces-link">
+                      <span class="blog-enlaces-icon" aria-hidden="true">↗</span>
+                      <span class="blog-enlaces-text">{{ link.texto || link.url }}</span>
+                    </a>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
 
-          <div class="blog-tags">
-            @for (tag of selectedPost.tags; track tag) {
-              <span class="blog-tag">#{{ tag }}</span>
-            }
+          <div class="blog-modal-actions">
+            <app-button variant="secondary" (click)="openEditModal(selectedPost)">Editar</app-button>
+            <button type="button" class="btn-danger" (click)="deletePost(selectedPost)">Eliminar</button>
           </div>
         </div>
       </article>
     </div>
   }
+
   @if (isCreateModalOpen) {
     <div class="blog-modal-backdrop" (click)="closeCreateModal()">
       <article class="blog-modal blog-modal--create" (click)="$event.stopPropagation()">
-        <button class="blog-modal-close" type="button" (click)="closeCreateModal()">
-          ✕
-        </button>
-
+        <button class="blog-modal-close" type="button" (click)="closeCreateModal()">✕</button>
         <div class="blog-modal-content">
-          <h2 class="blog-title">Crear blog</h2>
-          <p class="blog-excerpt">
-            Aquí más adelante conectaremos el formulario con el backend para guardar tus posts.
-          </p>
-
-          <form class="blog-create-form" (ngSubmit)="saveDraft()">
+          <h2 class="blog-title">Nueva entrada</h2>
+          <form class="blog-create-form" (ngSubmit)="saveCreate()">
             <label class="blog-create-field">
               <span>Título</span>
-              <input type="text" [(ngModel)]="draftPost.title" name="title" placeholder="Título de la entrada" />
+              <input type="text" [(ngModel)]="draftPost.title" name="title" placeholder="Título de la entrada" required />
+            </label>
+            <label class="blog-create-field">
+              <span>Descripción / contenido</span>
+              <textarea [(ngModel)]="draftPost.content" name="content" rows="5" placeholder="Contenido de la entrada" required></textarea>
+            </label>
+            <label class="blog-create-field">
+              <span>Fecha y hora (opcional)</span>
+              <input type="datetime-local" [(ngModel)]="draftPost.publishedAt" name="publishedAt" />
             </label>
 
-            <label class="blog-create-field">
-              <span>Descripción corta</span>
-              <textarea
-                [(ngModel)]="draftPost.excerpt"
-                name="excerpt"
-                rows="3"
-                placeholder="Resumen o descripción de la tarea/proyecto">
-              </textarea>
-            </label>
-
-            <label class="blog-create-field">
-              <span>Contenido (opcional por ahora)</span>
-              <textarea
-                [(ngModel)]="draftPost.content"
-                name="content"
-                rows="5"
-                placeholder="Aquí irá el contenido completo de la entrada">
-              </textarea>
-            </label>
+            <div class="blog-enlaces-form">
+              <div class="blog-enlaces-form-header">
+                <span class="blog-create-field span-label">Enlaces</span>
+                <button type="button" class="btn-add-link" (click)="addEnlace()">+ Añadir enlace</button>
+              </div>
+              @for (enlace of draftPost.enlaces; track i; let i = $index) {
+                <div class="blog-enlace-row">
+                  <input type="text" [(ngModel)]="draftPost.enlaces![i].texto" [name]="'texto' + i" placeholder="Texto (opcional)" class="blog-enlace-input" />
+                  <input type="url" [(ngModel)]="draftPost.enlaces![i].url" [name]="'url' + i" placeholder="https://..." class="blog-enlace-input" />
+                  <button type="button" class="btn-remove-link" (click)="removeEnlace(i)" title="Quitar">✕</button>
+                </div>
+              }
+            </div>
 
             <div class="blog-create-actions">
-              <button type="button" class="btn-secondary" (click)="closeCreateModal()">
-                Cancelar
-              </button>
-              <button type="submit" class="btn-primary">
-                Guardar borrador (solo frontend)
-              </button>
+              <button type="button" class="btn-secondary" (click)="closeCreateModal()">Cancelar</button>
+              <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando…' : 'Guardar' }}</button>
+            </div>
+          </form>
+        </div>
+      </article>
+    </div>
+  }
+
+  @if (isEditModalOpen) {
+    <div class="blog-modal-backdrop" (click)="closeEditModal()">
+      <article class="blog-modal blog-modal--create" (click)="$event.stopPropagation()">
+        <button class="blog-modal-close" type="button" (click)="closeEditModal()">✕</button>
+        <div class="blog-modal-content">
+          <h2 class="blog-title">Editar entrada</h2>
+          <form class="blog-create-form" (ngSubmit)="saveEdit()">
+            <label class="blog-create-field">
+              <span>Título</span>
+              <input type="text" [(ngModel)]="draftPost.title" name="titleEdit" placeholder="Título" required />
+            </label>
+            <label class="blog-create-field">
+              <span>Descripción / contenido</span>
+              <textarea [(ngModel)]="draftPost.content" name="contentEdit" rows="5" placeholder="Contenido" required></textarea>
+            </label>
+            <label class="blog-create-field">
+              <span>Fecha y hora</span>
+              <input type="datetime-local" [(ngModel)]="draftPost.publishedAt" name="publishedAtEdit" />
+            </label>
+
+            <div class="blog-enlaces-form">
+              <div class="blog-enlaces-form-header">
+                <span class="blog-create-field span-label">Enlaces</span>
+                <button type="button" class="btn-add-link" (click)="addEnlace()">+ Añadir enlace</button>
+              </div>
+              @for (enlace of draftPost.enlaces; track i; let i = $index) {
+                <div class="blog-enlace-row">
+                  <input type="text" [(ngModel)]="draftPost.enlaces![i].texto" [name]="'textoEdit' + i" placeholder="Texto (opcional)" class="blog-enlace-input" />
+                  <input type="url" [(ngModel)]="draftPost.enlaces![i].url" [name]="'urlEdit' + i" placeholder="https://..." class="blog-enlace-input" />
+                  <button type="button" class="btn-remove-link" (click)="removeEnlace(i)" title="Quitar">✕</button>
+                </div>
+              }
+            </div>
+
+            <div class="blog-create-actions">
+              <button type="button" class="btn-secondary" (click)="closeEditModal()">Cancelar</button>
+              <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando…' : 'Guardar cambios' }}</button>
             </div>
           </form>
         </div>
@@ -134,5 +181,3 @@
     </div>
   }
 </main>
-
-
