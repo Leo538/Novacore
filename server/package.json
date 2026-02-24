@@ -1,0 +1,27 @@
+{
+  "name": "novacore-server",
+  "version": "1.0.0",
+  "description": "Backend API para el blog de Novacore",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "migrate": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate",
+    "migrate:up": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate up",
+    "migrate:down": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate down",
+    "migrate:create": "node -r dotenv/config node_modules/node-pg-migrate/bin/node-pg-migrate create"
+  },
+  "dependencies": {
+    "cloudinary": "^2.5.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.13.0",
+    "streamifier": "^0.1.1"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "^6.2.2"
+  }
+}

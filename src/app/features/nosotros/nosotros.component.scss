@@ -61,6 +61,14 @@
   font-weight: 800;
 }
 
+.swiper-button-next::after {
+  content: '>' !important;
+}
+
+.swiper-button-prev::after {
+  content: '<' !important;
+}
+
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
   background-color: var(--primary-hover) !important;
